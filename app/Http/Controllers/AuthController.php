@@ -21,10 +21,10 @@ class AuthController extends Controller
                 'email' => 'required|email|unique:users,email',
                 'cpf' => 'required|unique:users,cpf',
                 'telefone' => 'required',
-                'data_nascimento' => 'required|date',
+                'data_nascimento' => 'required',
             ]);
 
-            $user = User::create(array_merge($validated, ['email_verificado' => false]));
+            $user = User::create(array_merge($validated, ['email_verified' => false]));
 
             $token = random_int(100000, 999999);
 
@@ -68,7 +68,7 @@ class AuthController extends Controller
             }
 
             $user = $verificationToken->user;
-            $user->update(['email_verificado' => true]);
+            $user->update(['email_verified' => true]);
 
             $verificationToken->delete();
 
