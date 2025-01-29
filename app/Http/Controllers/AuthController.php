@@ -159,9 +159,7 @@ class AuthController extends Controller
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'cpf' => $user->cpf,
-                    'telefone' => $user->telefone,
-                    'data_nascimento' => $user->data_nascimento,
+                    
             ]], 200);
         } catch (\Exception $e) {
             Log::error('Erro ao efetuar login: ' . $e->getMessage());
