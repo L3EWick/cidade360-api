@@ -19,7 +19,7 @@ class AppEventoController extends Controller
             'categoria' => 'required|string',
             'categoria_id' => 'required|integer',
             'descricao' => 'nullable|string|max:500',
-            'imagem' => 'nullable|image|max:2048',
+            'imagem' => 'nullable|image|max:10024',
         ]);
     
         $lat = $request->lat;

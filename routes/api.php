@@ -12,6 +12,10 @@ Route::post('/verify-email', [AuthController::class, 'verifyEmail']);
 Route::post('/request-login', [AuthController::class, 'requestLogin']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/eventos', [AppEventoController::class, 'index']);
-Route::post('/enviar-evento', [AppEventoController::class, 'store']);
-Route::get('/categorias', [AppCategoriaController::class, 'index']);
+
+Route::middleware(['jwt.auth'])->group(function () {
+    Route::post('/enviar-evento', [AppEventoController::class, 'store']);
+    Route::get('/eventos', [AppEventoController::class, 'index']);
+    Route::get('/categorias', [AppCategoriaController::class, 'index']);
+
+});
