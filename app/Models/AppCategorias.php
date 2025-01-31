@@ -9,10 +9,10 @@ class AppCategorias extends Model
 {
     use HasFactory;
 
-    protected $table = 'app_categorias';
+    protected $table = 'appmobileoption';
 
     protected $fillable = [
-        'nome', 
+        'option', 
     ];
 
 

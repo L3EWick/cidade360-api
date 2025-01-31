@@ -18,12 +18,10 @@ return new class extends Migration
             $table->string('cidade'); 
             $table->string('bairro'); 
             $table->string('estado'); 
-            $table->unsignedBigInteger('categoria_id'); 
+            $table->string('logradouro');
+            $table->string('categoria');
             $table->string('imagem'); 
             $table->timestamps(); 
-
-            
-            $table->foreign('categoria_id')->references('id')->on('app_categorias')->onDelete('cascade');
         });
     }
 

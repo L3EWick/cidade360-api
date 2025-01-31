@@ -86,34 +86,59 @@ class AuthController extends Controller
     public function requestLogin(Request $request)
     {
         try {
+            Log::info('Iniciando requestLogin.', ['request_data' => $request->all()]);
+    
+            // Validação da entrada
             $validated = $request->validate([
                 'identifier' => 'required',
             ]);
-
+    
+            Log::info('Parâmetros validados com sucesso.', ['validated_data' => $validated]);
+    
+            // Buscar usuário pelo e-mail ou CPF
             $user = User::where('email', $validated['identifier'])
                 ->orWhere('cpf', $validated['identifier'])
                 ->first();
-
+    
             if (!$user) {
+                Log::warning('Usuário não encontrado.', ['identifier' => $validated['identifier']]);
                 return response()->json(['success' => false, 'message' => 'Usuário não encontrado.'], 404);
             }
-
+    
+            Log::info('Usuário encontrado.', ['user_id' => $user->id, 'email' => $user->email]);
+    
+            // Gerar token de login
             $loginToken = random_int(100000, 999999);
             $expiresAt = now()->addMinutes(10);
-
+    
+            Log::info('Token gerado.', ['token' => $loginToken, 'expires_at' => $expiresAt]);
+    
+            // Salvar ou atualizar o token no banco
             LoginToken::updateOrCreate(
                 ['user_id' => $user->id],
                 ['token' => $loginToken, 'expires_at' => $expiresAt]
             );
-
-            Mail::to($user->email)->send(new LoginTokenMail($loginToken));
-
+    
+            Log::info('Token salvo no banco.', ['user_id' => $user->id]);
+    
+            // Enviar e-mail com o token
+            try {
+                Mail::to($user->email)->send(new LoginTokenMail($loginToken));
+                Log::info('E-mail enviado com sucesso.', ['user_id' => $user->id, 'email' => $user->email]);
+            } catch (\Exception $mailException) {
+                Log::error('Erro ao enviar o e-mail.', ['error' => $mailException->getMessage()]);
+            }
+    
             return response()->json([
                 'success' => true,
                 'message' => 'Token de login enviado para seu email.',
             ], 200);
-        } catch (\Exception $e) {
-            Log::error('Erro no envio do token de login: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            Log::error('Erro no envio do token de login.', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+    
             return response()->json([
                 'success' => false,
                 'message' => 'Ocorreu um erro ao solicitar o token de login.',

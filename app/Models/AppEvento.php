@@ -17,8 +17,11 @@ class AppEvento extends Model
         'cidade',
         'bairro',
         'estado',
+        'logradouro',
         'categoria',
+        'categoria_id',
         'imagem',
+        'descricao',
     ];
 
     public function categoria()
